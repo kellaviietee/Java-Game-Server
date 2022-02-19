@@ -1,2 +1,2 @@
-# iti0301-2022-server
+# iti0301-2022-game
 
