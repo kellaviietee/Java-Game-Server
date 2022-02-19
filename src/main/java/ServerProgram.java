@@ -36,7 +36,7 @@ public class ServerProgram extends Listener {
 
     }
     public void disconnected(Connection c){
-        System.out.println("Connection lost from...." + c.getRemoteAddressTCP().getHostString());
+        System.out.println("Connection lost from....");
     }
     //Run when we receive a packet.
     public void received(Connection c, Object o){
