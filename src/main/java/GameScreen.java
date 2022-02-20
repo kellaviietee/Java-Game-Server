@@ -8,9 +8,13 @@ Also helps to change the scenes.
 public class GameScreen implements Screen {
     Core game;
     GameWorld gameWorld;
-    public GameScreen(Core game){
+    ServerProgram server;
+
+
+    public GameScreen(Core game, ServerProgram server){
+        this.server = server;
         this.game = game;
-        gameWorld = new GameWorld();
+        gameWorld = new GameWorld(server);
         Gdx.input.setCursorCatched(false);
     }
 

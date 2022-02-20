@@ -11,10 +11,11 @@ public class ServerProgram extends Listener {
     public ServerProgram() {
     }
 
-    public static void main(String[] args) throws Exception {
+    public void start() throws Exception {
         server = new Server();
         //register a packet.
         server.getKryo().register(PacketMessage.class);
+        server.getKryo().register(com.badlogic.gdx.math.Vector3.class);
         //Can only send object as packets if they are registered.
         server.bind(tcpPort,udpPort);
 
@@ -41,5 +42,12 @@ public class ServerProgram extends Listener {
     //Run when we receive a packet.
     public void received(Connection c, Object o){
 
+    }
+    public void sendVector3(PacketMessage message){
+        Connection[] allConnections = server.getConnections();
+        for(Connection connection:allConnections){
+        message.message = "TILE_LOC";
+        connection.sendTCP(message);
+        }
     }
 }
