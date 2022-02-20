@@ -9,10 +9,15 @@ public class Core extends ApplicationAdapter {
     public static final int WIDTH = 1024;
     public static final int HEIGHT = 720;
     Screen screen;
+    ServerProgram server;
+
+    public Core(ServerProgram server) {
+        this.server = server;
+    }
 
     @Override
     public void create() {
-        setScreen(new GameScreen(this));
+        setScreen(new GameScreen(this,server));
     }
 
     @Override

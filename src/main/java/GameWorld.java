@@ -21,11 +21,13 @@ public class GameWorld {
     public PerspectiveCamera cam;
     private Engine engine;
     private AssetManager assetManager;
-    private HexGrid hexGrid;
+    private final HexGrid hexGrid;
     private GameCameraController gameCameraController;
+    private final ServerProgram server;
 
 
-    public GameWorld(){
+    public GameWorld(ServerProgram server){
+        this.server = server;
         initPersCamera();
         initEnviornment();
         initModelBatch();
@@ -88,6 +90,9 @@ public class GameWorld {
         gameCameraController.updateDelta(delta);
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
             Vector3 instanceLocation = getFloorCoordinates();
+            PacketMessage packetMessage = new PacketMessage();
+            packetMessage.tileLocation = instanceLocation;
+            server.sendVector3(packetMessage);
             Model testModel = getTestModel();
             Entity testentity = new Entity();
             testentity.add(new ModelComponent(testModel,instanceLocation.x,instanceLocation.y,instanceLocation.z));
