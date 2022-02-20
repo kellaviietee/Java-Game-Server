@@ -36,13 +36,26 @@ public class ServerProgram extends Listener {
         c.sendTCP(packetMessage);
 
     }
+
+    /**
+     * What server does when Connection is lost.
+     * @param c
+     */
     public void disconnected(Connection c){
         System.out.println("Connection lost from....");
     }
     //Run when we receive a packet.
     public void received(Connection c, Object o){
+        if(o instanceof PacketMessage packetMessage){
+            sendVector3(packetMessage);
+        }
 
     }
+
+    /**
+     * Send the same message to all the clients that are connected.
+     * @param message Message to be sent over.
+     */
     public void sendVector3(PacketMessage message){
         Connection[] allConnections = server.getConnections();
         for(Connection connection:allConnections){
