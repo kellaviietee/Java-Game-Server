@@ -7,13 +7,9 @@ import java.util.Date;
 public class ServerProgram extends Listener {
     static Server server;
     static int udpPort = 27960, tcpPort = 27960;
-    static GameWorld gameWorld;
+    static HexGrid hexGrid = new HexGrid(1.025f);
 
     public ServerProgram() {
-    }
-
-    public void addGameWorld(GameWorld gameWorld){
-        ServerProgram.gameWorld = gameWorld;
     }
 
     public void start() throws Exception {
