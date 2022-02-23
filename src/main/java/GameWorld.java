@@ -36,6 +36,7 @@ public class GameWorld {
         engine.addSystem(new RenderSystem(modelBatch,environment));
         assetManager = new AssetManager();
         loadAllModels();
+        server.addGameWorld(this);
     }
     public void loadAllModels(){
         assetManager.load("Assets/plain.g3db",Model.class);
