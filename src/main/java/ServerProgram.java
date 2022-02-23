@@ -7,6 +7,7 @@ import java.util.Date;
 public class ServerProgram extends Listener {
     static Server server;
     static int udpPort = 27960, tcpPort = 27960;
+    static HexGrid hexGrid = new HexGrid(1.025f);
 
     public ServerProgram() {
     }
@@ -44,7 +45,10 @@ public class ServerProgram extends Listener {
     public void disconnected(Connection c){
         System.out.println("Connection lost from....");
     }
-    //Run when we receive a packet.
+
+    /**
+     * Run when we receive a packet.
+     */
     public void received(Connection c, Object o){
         if(o instanceof PacketMessage packetMessage){
             sendVector3(packetMessage);
