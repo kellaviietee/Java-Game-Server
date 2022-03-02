@@ -3,8 +3,20 @@ import com.badlogic.gdx.math.Vector3;
 
 import static java.lang.Math.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class HexGrid {
     private final float tileSize;
+    private final static List<Vector3> directions = Arrays.asList(
+            new Vector3(+1, 0, -1),
+            new Vector3(+1, -1, 0),
+            new Vector3(0, -1, +1),
+            new Vector3(-1, 0, +1),
+            new Vector3(-1, +1, 0),
+            new Vector3(0, +1, -1)
+    );
 
     public HexGrid(float tileSize) {
         this.tileSize = tileSize;
@@ -49,12 +61,20 @@ public class HexGrid {
      * @param worldCoordinates
      * @return
      */
-    public Vector3 pixelToHex(Vector3 worldCoordinates) {
+    public Vector2 pixelToHex(Vector3 worldCoordinates) {
         float q = (float)(sqrt(3)/3 * worldCoordinates.x - 1f/3f * worldCoordinates.z)/ tileSize;
         float r = (2f/ 3f * worldCoordinates.z) / tileSize;
         Vector2 fracAxial = new Vector2(q,r);
         Vector2 wholeAxial = AxialRound(fracAxial);
-        return new Vector3(wholeAxial.x,0,wholeAxial.y);
+        return new Vector2(wholeAxial.x, wholeAxial.y);
+    }
+
+    public Vector3 around(Vector3 cubeCoords, int direction)
+    {
+        assert(direction > 0);
+        assert(direction < 6);
+
+        return new Vector3(cubeCoords.add(directions.get(direction)));
     }
 
     /**
@@ -82,7 +102,4 @@ public class HexGrid {
         Vector3 wholeAxial = new Vector3(q,r,s);
         return cubeToAxial(wholeAxial);
     }
-
 }
-
-
