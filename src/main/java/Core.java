@@ -1,25 +1,20 @@
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 
 
+public class Core extends Game {
+    public Core() {
 
-public class Core extends ApplicationAdapter {
-    public static final int WIDTH = 1024;
-    public static final int HEIGHT = 720;
-    Screen screen;
-    ServerProgram server;
-
-    public Core(ServerProgram server) {
-        this.server = server;
     }
 
     @Override
     public void create() {
-        setScreen(new GameScreen(this,server));
+        //setScreen(new GameScreen(this,server));
     }
-
+    /*
     @Override
     public void render() {
         Gdx.gl.glClearColor(0,0,0,1);
@@ -27,10 +22,14 @@ public class Core extends ApplicationAdapter {
         screen.render(Gdx.graphics.getDeltaTime());
     }
 
+
+
     @Override
     public void resize(int width, int height) {
         screen.resize(width, height);
     }
+
+
 
     public void setScreen(Screen screen) {
         if(this.screen != null){
@@ -43,4 +42,5 @@ public class Core extends ApplicationAdapter {
             this.screen.resize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         }
     }
+     */
 }
