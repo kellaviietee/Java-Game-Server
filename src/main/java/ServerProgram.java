@@ -1,14 +1,14 @@
 
 import Hexgrid.HexGrid;
 import com.badlogic.gdx.math.Vector3;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.KryoObjectInput;
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.KryoSerialization;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ServerProgram extends Listener {
     static final float TILE_SIZE = 1.025f;
@@ -66,11 +66,22 @@ public class ServerProgram extends Listener {
     public void received(Connection c, Object o) {
         if (o instanceof PacketMessage) {
             if (Objects.equals(((PacketMessage) o).message, "TILE_LOC")) {
-                sendVector3((PacketMessage) o);
+                if (hexGrid.isInAvailableTiles(((PacketMessage) o).tileLocation)) {
+                    sendVector3((PacketMessage) o);
+                    hexGrid.addTilesToMap(((PacketMessage) o).tileLocation,((PacketMessage) o).tileName);
+                    List<Vector3> newFreeTiles = hexGrid.newFreeTiles(((PacketMessage) o).tileLocation);
+                    for (Vector3 freeTile : newFreeTiles) {
+                        hexGrid.addFreeTile(freeTile);
+                        PacketMessage message = new PacketMessage();
+                        message.message = "TILE_LOC";
+                        message.tileLocation = freeTile;
+                        message.tileName = "Free";
+                        sendVector3(message);
+                    }
+                }
             } else {
                 sendCurrentMap(c);
             }
-
         }
 
     }
@@ -83,8 +94,6 @@ public class ServerProgram extends Listener {
     public void sendVector3(PacketMessage message) {
         Connection[] allConnections = server.getConnections();
         for (Connection connection : allConnections) {
-            message.message = "TILE_LOC";
-            message.tileName = "Mill";
             connection.sendTCP(message);
         }
     }
@@ -100,14 +109,15 @@ public class ServerProgram extends Listener {
         return 0;
     }
 
+
+
     /**
-     * Pick a specified number of tiles for a player.
+     * Generate the Initial tiles for a single player that is connected to the Server.
      *
-     * @param howMany How many tiles will be sent to the Player.
-     * @return List of integers that represent a Tile number to be sent to the Player.
+     * @param howMany How many tiles does  player get.
      */
-    public List<Integer> initialTilesForPlayer(int howMany) {
-        return null;
+    public List<String> InitialTilesForThePlayer(int howMany) {
+        return hexGrid.initialTilesForPlayer(howMany);
     }
 
     /**
@@ -115,7 +125,8 @@ public class ServerProgram extends Listener {
      *
      * @param howMany How many tiles does each player get.
      */
-    public void InitialTilesForAllThePlayers(int howMany) {
+    public List<String> InitialTilesForAllThePlayers(int howMany) {
+        return hexGrid.initialTilesForPlayer(howMany);
 
     }
 
@@ -140,9 +151,8 @@ public class ServerProgram extends Listener {
     public void sendCurrentMap(Connection player) {
         PacketMessage tileInfo = new PacketMessage();
         tileInfo.message = "NEW_MAP";
-        tileInfo.mapTiles = (HashMap<Vector3, String>) hexGrid.getTileLocationType();
+        tileInfo.serverMap = (HashMap<Vector3, String>) hexGrid.getTileLocationType();
         player.sendTCP(tileInfo);
     }
-
 }
 

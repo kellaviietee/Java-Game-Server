@@ -6,5 +6,5 @@ public class PacketMessage {
     public String message;
     public Vector3 tileLocation;
     public String tileName;
-    public HashMap<Vector3,String> mapTiles;
+    public HashMap<Vector3,String> serverMap;
 }

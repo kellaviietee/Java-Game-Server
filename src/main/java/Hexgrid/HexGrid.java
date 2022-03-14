@@ -18,12 +18,18 @@ public class HexGrid {
             new Vector3(-1, +1, 0),
             new Vector3(0, +1, -1)
     );
+    private final static String[] allTileNames = {"Archery", "Barracks", "Castle", "FarmPlot", "Forest1", "Forest2",
+            "Forest3", "House", "Lumbermill", "Market", "Mill", "Mine", "Mountain","Plain","Road1","Road2" ,"Road3",
+            "Road4", "Road5","Road6","Road7","Road8","Road9","Road10","Road11","Road12","Road13","Rocks1", "Rocks2",
+            "WallCorner", "WallGate", "WallHexCorner1", "WallHexCorner2", "WallStraight", "Watchtower", "Water1",
+            "Water2", "Water3", "Water4", "Water5", "Watermill", "Well"};
 
     private final Map<Vector3, String> tileLocationType = new HashMap<>();
     private final Map<String, List<Vector3>> tileTypeLocation = new HashMap<>();
 
     public HexGrid(float tileSize) {
         this.tileSize = tileSize;
+        startNewMap();
     }
 
     /**
@@ -210,5 +216,20 @@ public class HexGrid {
 
     public Map<Vector3, String> getTileLocationType() {
         return tileLocationType;
+    }
+
+    /**
+     * Pick a specified number of tiles for a player.
+     *
+     * @param howMany How many tiles will be sent to the Player.
+     * @return List of integers that represent a Tile number to be sent to the Player.
+     */
+    public List<String> initialTilesForPlayer(int howMany) {
+        List<String> initialTiles = new ArrayList<>();
+        for (int i = 0; i< howMany; i++) {
+        int randomint = (int) (Math.random() * allTileNames.length);
+        initialTiles.add(allTileNames[randomint]);
+        }
+        return initialTiles;
     }
 }
