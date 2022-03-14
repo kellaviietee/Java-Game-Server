@@ -6,6 +6,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,8 +24,9 @@ public class ServerProgram extends Listener {
         //register a packet.
         server.getKryo().register(PacketMessage.class);
         server.getKryo().register(com.badlogic.gdx.math.Vector3.class);
+        server.getKryo().register(HashMap.class);
         //Can only send object as packets if they are registered.
-        server.bind(tcpPort,udpPort);
+        server.bind(tcpPort, udpPort);
 
         server.start();
 
@@ -33,7 +35,8 @@ public class ServerProgram extends Listener {
         System.out.println("Server is operational...");
         hexGrid.startNewMap();
     }
-    public void connected(Connection c){
+
+    public void connected(Connection c) {
         System.out.println("Received a connection from..." + c.getRemoteAddressTCP().getHostString());
         //Create a messagePacket
         PacketMessage packetMessage = new PacketMessage();
@@ -45,9 +48,10 @@ public class ServerProgram extends Listener {
 
     /**
      * What server does when Connection is lost.
+     *
      * @param c
      */
-    public void disconnected(Connection c){
+    public void disconnected(Connection c) {
         System.out.println(
                 "Connection lost from....");
         if (server.getConnections().length == 0) {
@@ -59,8 +63,8 @@ public class ServerProgram extends Listener {
      * Run when we receive a packet.
      */
 
-    public void received(Connection c, Object o){
-        if(o instanceof PacketMessage){
+    public void received(Connection c, Object o) {
+        if (o instanceof PacketMessage) {
             if (Objects.equals(((PacketMessage) o).message, "TILE_LOC")) {
                 sendVector3((PacketMessage) o);
             } else {
@@ -73,20 +77,22 @@ public class ServerProgram extends Listener {
 
     /**
      * Send the same message to all the clients that are connected.
+     *
      * @param message Message to be sent over.
      */
-    public void sendVector3(PacketMessage message){
+    public void sendVector3(PacketMessage message) {
         Connection[] allConnections = server.getConnections();
-        for(Connection connection:allConnections){
-        message.message = "TILE_LOC";
-        message.tileName = "Mill";
-        connection.sendTCP(message);
+        for (Connection connection : allConnections) {
+            message.message = "TILE_LOC";
+            message.tileName = "Mill";
+            connection.sendTCP(message);
         }
     }
 
 
     /**
      * Pick a random Tile to send to Player
+     *
      * @return number between 0 - 41
      */
 
@@ -96,6 +102,7 @@ public class ServerProgram extends Listener {
 
     /**
      * Pick a specified number of tiles for a player.
+     *
      * @param howMany How many tiles will be sent to the Player.
      * @return List of integers that represent a Tile number to be sent to the Player.
      */
@@ -105,6 +112,7 @@ public class ServerProgram extends Listener {
 
     /**
      * Generate the Initial tiles for all the players that are connected to the Server.
+     *
      * @param howMany How many tiles does each player get.
      */
     public void InitialTilesForAllThePlayers(int howMany) {
@@ -126,16 +134,15 @@ public class ServerProgram extends Listener {
 
     /**
      * Send all info about current Map to the player.
+     *
      * @param player Player that needs the current Map.
      */
     public void sendCurrentMap(Connection player) {
-        for (Vector3 key : hexGrid.getTileLocationType().keySet()) {
-            PacketMessage tileInfo = new PacketMessage();
-            tileInfo.message = "TILE_LOC";
-            tileInfo.tileLocation = key;
-            tileInfo.tileName = hexGrid.getTileLocationType().get(key);
-            player.sendTCP(tileInfo);
-        }
-
+        PacketMessage tileInfo = new PacketMessage();
+        tileInfo.message = "NEW_MAP";
+        tileInfo.mapTiles = (HashMap<Vector3, String>) hexGrid.getTileLocationType();
+        player.sendTCP(tileInfo);
     }
+
 }
+
