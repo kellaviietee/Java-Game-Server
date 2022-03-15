@@ -25,6 +25,8 @@ public class ServerProgram extends Listener {
         server.getKryo().register(PacketMessage.class);
         server.getKryo().register(com.badlogic.gdx.math.Vector3.class);
         server.getKryo().register(HashMap.class);
+        server.getKryo().register(List.class);
+        server.getKryo().register(ArrayList.class);
         //Can only send object as packets if they are registered.
         server.bind(tcpPort, udpPort);
 
@@ -116,7 +118,7 @@ public class ServerProgram extends Listener {
      *
      * @param howMany How many tiles does  player get.
      */
-    public List<String> InitialTilesForThePlayer(int howMany) {
+    public List<String> initialTilesForThePlayer(int howMany) {
         return hexGrid.initialTilesForPlayer(howMany);
     }
 
@@ -125,7 +127,7 @@ public class ServerProgram extends Listener {
      *
      * @param howMany How many tiles does each player get.
      */
-    public List<String> InitialTilesForAllThePlayers(int howMany) {
+    public List<String> initialTilesForAllThePlayers(int howMany) {
         return hexGrid.initialTilesForPlayer(howMany);
 
     }
@@ -153,6 +155,11 @@ public class ServerProgram extends Listener {
         tileInfo.message = "NEW_MAP";
         tileInfo.serverMap = (HashMap<Vector3, String>) hexGrid.getTileLocationType();
         player.sendTCP(tileInfo);
+        List<String> startTiles = initialTilesForThePlayer(10);
+        PacketMessage startingTiles = new PacketMessage();
+        startingTiles.message = "START_TILES";
+        startingTiles.startTiles = startTiles;
+        player.sendTCP(startingTiles);
     }
 }
 
