@@ -1,10 +1,7 @@
 
 import Hexgrid.HexGrid;
 import com.badlogic.gdx.math.Vector3;
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.KryoObjectInput;
 import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.KryoSerialization;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
@@ -69,6 +66,7 @@ public class ServerProgram extends Listener {
         if (o instanceof PacketMessage) {
             if (Objects.equals(((PacketMessage) o).message, "TILE_LOC")) {
                 if (hexGrid.isInAvailableTiles(((PacketMessage) o).tileLocation)) {
+                    removeFreeTile((PacketMessage) o);
                     sendVector3((PacketMessage) o);
                     hexGrid.addTilesToMap(((PacketMessage) o).tileLocation,((PacketMessage) o).tileName);
                     List<Vector3> newFreeTiles = hexGrid.newFreeTiles(((PacketMessage) o).tileLocation);
@@ -160,6 +158,17 @@ public class ServerProgram extends Listener {
         startingTiles.message = "START_TILES";
         startingTiles.startTiles = startTiles;
         player.sendTCP(startingTiles);
+    }
+
+    /**
+     * Remove a Free tile from the Players map.
+     * @param tileToRemove Message that includes the Cube Coordinates.
+     */
+    private void removeFreeTile(PacketMessage tileToRemove) {
+        PacketMessage removeFree = new PacketMessage();
+        removeFree.message = "REMOVE_TILE";
+        removeFree.tileLocation = tileToRemove.tileLocation;
+        sendVector3(removeFree);
     }
 }
 
