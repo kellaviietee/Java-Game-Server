@@ -8,7 +8,7 @@ import com.esotericsoftware.kryonet.Server;
 import java.util.*;
 
 public class ServerProgram extends Listener {
-    static final float TILE_SIZE = 1.025f;
+    static final float TILE_SIZE = 1.1f;
     static Server server;
     static int udpPort = 8080, tcpPort = 8080;
     static HexGrid hexGrid = new HexGrid(TILE_SIZE);
